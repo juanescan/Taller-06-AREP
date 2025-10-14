@@ -1,24 +1,26 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Gestor de Propiedades</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Aplicación Segura</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Gestor de Propiedades</h1>
+    <h1>Iniciar Sesión</h1>
+    <form id="loginForm">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" required><br><br>
 
-  <form id="createForm">
-    <input id="address" name="address" placeholder="Dirección" required />
-    <input id="price" name="price" type="number" step="0.01" placeholder="Precio" required />
-    <input id="size" name="size" type="number" step="0.01" placeholder="Tamaño" required />
-    <textarea id="description" name="description" placeholder="Descripción"></textarea>
-    <button id="submitBtn" type="submit">Crear</button>
-  </form>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" required><br><br>
 
-  <div id="messages"></div>
-  <ul id="propertiesList"></ul>
+        <button type="submit">Iniciar Sesión</button>
+    </form>
 
-  <script src="app.js"></script>
+    <p id="mensaje"></p>
+
+    <script src="config.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>

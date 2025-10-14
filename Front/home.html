@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesProperty.css">
+    <title>Property Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body>
+<h1>Property Management 🏠</h1>
+
+<!-- Formulario de búsqueda -->
+<div class="form-container">
+	
+	<!-- Formulario de ingreso de datos -->
+	<form id="propertyForm" class="form-block">
+	    <div class="form-group">
+	        <label for="address">Address</label>
+	        <input type="text" id="address" placeholder="Enter address" required>
+	    </div>
+
+	    <div class="form-group">
+	        <label for="price">Price</label>
+	        <input type="number" id="price" placeholder="Enter price" required>
+	    </div>
+
+	    <div class="form-group">
+	        <label for="size">Size</label>
+	        <input type="number" id="size" placeholder="Enter size" required>
+	    </div>
+
+	    <div class="form-group">
+	        <label for="description">Description</label>
+	        <textarea id="description" placeholder="Enter description" required></textarea>
+	    </div>
+
+	    <button type="submit">Add Property</button>
+	</form>
+	<form id="searchForm" class="form-block">
+	    <div class="form-group">
+	        <label for="searchAddress">Address</label>
+	        <input type="text" id="searchAddress" placeholder="Enter address">
+	    </div>
+
+	    <div class="form-group">
+	        <label for="minPrice">Min Price</label>
+	        <input type="number" id="minPrice" placeholder="Enter min price">
+	    </div>
+
+	    <div class="form-group">
+	        <label for="maxPrice">Max Price</label>
+	        <input type="number" id="maxPrice" placeholder="Enter max price">
+	    </div>
+
+	    <div class="form-group">
+	        <label for="minSize">Min Size</label>
+	        <input type="number" id="minSize" placeholder="Enter min size">
+	    </div>
+
+	    <div class="form-group">
+	        <label for="maxSize">Max Size</label>
+	        <input type="number" id="maxSize" placeholder="Enter max size">
+	    </div>
+
+	    <button type="submit">Search</button>
+	</form>
+
+</div>
+<h2>Property List ✅</h2>
+<ul id="propertyList"></ul>
+
+
+<div id="paginationControls">
+    <button id="prevPage">Anterior</button>
+    <span id="pageInfo">Página 1</span>
+    <button id="nextPage">Siguiente</button>
+</div>
+
+
+<button onclick="logout()">Cerrar Sesión</button>
+
+<script src="script.js"></script>
+</body>
+</html>
