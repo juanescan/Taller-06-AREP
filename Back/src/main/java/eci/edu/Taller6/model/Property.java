@@ -1,4 +1,4 @@
-package eci.edu.Taller5.Property;
+package eci.edu.Taller6.Property;
 
 
 import jakarta.persistence.*;

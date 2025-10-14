@@ -1,7 +1,10 @@
-package eci.edu.Taller5.Property;
+package eci.edu.Taller6.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import eci.edu.Taller6.model.Property;
+import eci.edu.Taller6.repository.PropertyRepository;
 
 import java.util.List;
 import java.util.Optional;

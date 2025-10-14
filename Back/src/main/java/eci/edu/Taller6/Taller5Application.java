@@ -1,4 +1,4 @@
-package eci.edu.Taller5;
+package eci.edu.Taller6;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
