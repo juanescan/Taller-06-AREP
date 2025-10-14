@@ -1,19 +1,18 @@
+const BACKEND_URL = "https://taller6home.duckdns.org:8443";
+const apiUrl = `${BACKEND_URL}/api/properties`;
+let editingId = null;
 
-
-const apiUrl = '/api/properties';
-let editingId = null; 
-
-
+// 📋 Listar propiedades
 async function listProperties() {
   try {
-    const res = await fetch(apiUrl);
+    const res = await fetch(apiUrl, { credentials: "include" }); // 🔹 incluye cookies si tu backend usa sesión
     if (!res.ok) throw new Error('Error al obtener datos');
 
     const props = await res.json();
     const ul = document.getElementById('propertiesList');
     ul.innerHTML = '';
 
-    if (props.length === 0) {
+    if (!props.length) {
       ul.innerHTML = '<li>No hay propiedades registradas.</li>';
       return;
     }
@@ -22,9 +21,11 @@ async function listProperties() {
       const li = document.createElement('li');
       li.innerHTML = `
         <strong>${p.address}</strong> — $${p.price} — ${p.size} m²
-        <button onclick="view(${p.id})">Ver</button>
-        <button onclick="edit(${p.id})">Editar</button>
-        <button onclick="delProp(${p.id})">Borrar</button>
+        <div class="actions">
+          <button onclick="view(${p.id})">Ver</button>
+          <button onclick="edit(${p.id})">Editar</button>
+          <button onclick="delProp(${p.id})">Borrar</button>
+        </div>
       `;
       ul.appendChild(li);
     });
@@ -33,7 +34,7 @@ async function listProperties() {
   }
 }
 
-
+// 🏗️ Crear / actualizar propiedad
 document.getElementById('createForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -52,6 +53,7 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     const res = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
+      credentials: "include", // 🔹 importante si tu backend usa cookies OAuth o CORS
       body: JSON.stringify(body)
     });
 
@@ -67,11 +69,14 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
   }
 });
 
-
+// 🗑️ Eliminar
 async function delProp(id) {
   if (!confirm('¿Seguro que deseas borrar este registro?')) return;
   try {
-    const res = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${apiUrl}/${id}`, {
+      method: 'DELETE',
+      credentials: "include"
+    });
     if (!res.ok) throw new Error('Error al eliminar');
     showMsg('🗑️ Propiedad eliminada');
     listProperties();
@@ -80,10 +85,10 @@ async function delProp(id) {
   }
 }
 
-
+// ✏️ Editar
 async function edit(id) {
   try {
-    const res = await fetch(`${apiUrl}/${id}`);
+    const res = await fetch(`${apiUrl}/${id}`, { credentials: "include" });
     if (!res.ok) throw new Error('No se pudo obtener el registro');
 
     const p = await res.json();
@@ -100,12 +105,12 @@ async function edit(id) {
   }
 }
 
-
+// 🔍 Vista (temporal)
 function view(id) {
-  alert(`Detalle de la propiedad #${id} (puedes implementarlo más adelante)`);
+  alert(`Detalle de la propiedad #${id} (por implementar)`);
 }
 
-
+// 📨 Mensajes
 function showMsg(m) {
   const msg = document.getElementById('messages');
   msg.innerText = m;
@@ -113,5 +118,5 @@ function showMsg(m) {
   setTimeout(() => (msg.style.opacity = 0), 3000);
 }
 
-
+// 🚀 Cargar propiedades al iniciar
 window.onload = listProperties;
