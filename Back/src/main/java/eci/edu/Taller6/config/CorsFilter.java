@@ -15,7 +15,7 @@ public class CorsFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
 
-        res.setHeader("Access-Control-Allow-Origin", "http://taller6homefront.duckdns.org");
+        res.setHeader("Access-Control-Allow-Origin", "https://taller6homefront.duckdns.org");
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization");
         res.setHeader("Access-Control-Allow-Credentials", "true");
