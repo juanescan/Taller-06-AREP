@@ -1,1 +1,1 @@
-const BACKEND_URL = "https://taller6home.duckdns.org:8443";
+const BACKEND_URL = "https://taller6home.duckdns.org:8080";
