@@ -178,15 +178,10 @@ README.md
 
 
 
-### configuracion
+### configuración
 
 ![conf](/images/propiedades.png)
 
-### APP
-
-![app](/images/1.png)
-
-![app](/images/2.png)
   
 ### Test
 
