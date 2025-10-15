@@ -49,12 +49,17 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
   const url = editingId ? `${apiUrl}/${editingId}` : apiUrl;
 
   try {
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      credentials: "include", // 🔹 importante si tu backend usa cookies OAuth o CORS
-      body: JSON.stringify(body)
-    });
+    const token = localStorage.getItem("token"); // 🔑 obtener token
+const res = await fetch(url, {
+    method,
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` // enviar token JWT
+    },
+    body: JSON.stringify(body),
+    credentials: "include"
+});
+
 
     if (!res.ok) throw new Error('Error al guardar');
 
