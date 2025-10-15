@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "https://taller06arepfront.duckdns.org")
+@CrossOrigin(origins = "http://taller6homefront.duckdns.org")
 public class AuthController {
 
     private final UserService userService;
