@@ -1,15 +1,16 @@
 package eci.edu.Taller6.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import eci.edu.Taller6.model.Property;
 import eci.edu.Taller6.repository.PropertyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
 @Service
 public class PropertyService {
 
@@ -20,9 +21,6 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
-    public Page<Property> getAllPropertiesPaged(int page, int size) {
-        return propertyRepository.findAll(PageRequest.of(page, size));
-    }
     public Optional<Property> getPropertyById(Long id) {
         return propertyRepository.findById(id);
     }
@@ -54,18 +52,27 @@ public class PropertyService {
     public void deleteProperty(Long id) {
         propertyRepository.deleteById(id);
     }
+
     public Page<Property> getAllProperties(int page, int size) {
         return propertyRepository.findAll(PageRequest.of(page, size));
     }
     public List<Property> searchProperties(String address, Double minPrice, Double maxPrice, Double minSize, Double maxSize) {
-        if (address != null) {
+        if (address != null && !address.isEmpty()) {
             return propertyRepository.findByAddressContainingIgnoreCase(address);
-        } else if (minPrice != null && maxPrice != null) {
-            return propertyRepository.findByPriceBetween(minPrice, maxPrice);
-        } else if (minSize != null && maxSize != null) {
-            return propertyRepository.findBySizeBetween(minSize, maxSize);
         } else {
-            return propertyRepository.findAll();
+            Specification<Property> spec = Specification.where(null);
+
+            if (minPrice != null && maxPrice != null) {
+                spec = spec.and((root, query, criteriaBuilder) ->
+                        criteriaBuilder.between(root.get("price"), minPrice, maxPrice));
+            }
+
+            if (minSize != null && maxSize != null) {
+                spec = spec.and((root, query, criteriaBuilder) ->
+                        criteriaBuilder.between(root.get("size"), minSize, maxSize));
+            }
+
+            return propertyRepository.findAll(spec);
         }
     }
 }

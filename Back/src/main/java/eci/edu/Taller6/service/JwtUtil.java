@@ -1,5 +1,4 @@
 package eci.edu.Taller6.service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,7 +17,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora de validez
                 .signWith(key)
                 .compact();
     }
@@ -31,7 +30,7 @@ public class JwtUtil {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            System.err.println("❌ Error al validar el token: " + e.getMessage());
+            System.err.println("Error al validar el token: " + e.getMessage());
             return false;
         }
     }
