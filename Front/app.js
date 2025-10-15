@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://taller6home.duckdns.org:8080";
+const BACKEND_URL = "https://taller6home.duckdns.org:8845";
 const apiUrl = `${BACKEND_URL}/api/properties`;
 let editingId = null;
 
