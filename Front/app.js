@@ -1,131 +1,232 @@
+const API_URL = "https://taller6home.org:8443/api/properties";
+const BACKEND_URL = "https://taller6home.duckdns.org:8443";
 
-let editingId = null;
+let currentPage = 0;
+const pageSize = 5;
 
-async function listProperties() {
-  try {
+function showSuccess(message) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "green",
+    }).showToast();
+}
+
+function showError(message) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "red",
+    }).showToast();
+}
+
+async function loadProperties(page = currentPage, size = pageSize) {
     const token = localStorage.getItem("token");
-    const res = await fetch(apiUrl, {
-      headers: { "Authorization": `Bearer ${token}` },
-      credentials: "include"
-    });
+    try {
+            const response = await fetch(`${API_URL}/paged?page=${page}&size=${size}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
 
-    if (!res.ok) throw new Error('Error al obtener datos');
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+	const propertiesPage = await response.json();
+        const propertyList = document.getElementById("propertyList");
+        propertyList.innerHTML = "";
 
-    const props = await res.json();
-    const ul = document.getElementById('propertyList'); // coincide con HTML
-    ul.innerHTML = '';
+        propertiesPage.content.forEach(property => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <strong>${property.address}</strong><br>
+                Price: $${property.price}<br>
+                Size: ${property.size} sqft<br>
+                Description: ${property.description}<br>
+                <button onclick="updateProperty(${property.id})">Update</button>
+                <button onclick="deleteProperty(${property.id})">Delete</button>
+            `;
+            propertyList.appendChild(li);
+        });
 
-    if (!props.length) {
-      ul.innerHTML = '<li>No hay propiedades registradas.</li>';
-      return;
+        // Actualizar la información de la página
+        document.getElementById("pageInfo").textContent = `Página ${propertiesPage.number + 1} de ${propertiesPage.totalPages}`;
+        currentPage = propertiesPage.number;
+
+        // Habilitar/deshabilitar botones de paginación
+        document.getElementById("prevPage").disabled = propertiesPage.first;
+        document.getElementById("nextPage").disabled = propertiesPage.last;
+
+        } catch (error) {
+            console.error("Error loading properties:", error);
+            showError("Failed to load properties.");
+        }
+}
+
+// Manejar el formulario de búsqueda
+document.getElementById("searchForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+
+    const searchAddress = document.getElementById("searchAddress").value;
+    const minPrice = document.getElementById("minPrice").value;
+    const maxPrice = document.getElementById("maxPrice").value;
+    const minSize = document.getElementById("minSize").value;
+    const maxSize = document.getElementById("maxSize").value;
+
+    try {
+        const response = await fetch(`${API_URL}/search?address=${searchAddress}&minPrice=${minPrice}&maxPrice=${maxPrice}&minSize=${minSize}&maxSize=${maxSize}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        const properties = await response.json();
+        const propertyList = document.getElementById("propertyList");
+        propertyList.innerHTML = "";
+
+        properties.forEach(property => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <strong>${property.address}</strong><br>
+                Price: $${property.price}<br>
+                Size: ${property.size} sqft<br>
+                Description: ${property.description}<br>
+                <button onclick="updateProperty(${property.id})">Update</button>
+                <button onclick="deleteProperty(${property.id})">Delete</button>
+            `;
+            propertyList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Error searching properties:", error);
+        showError("Failed to search properties.");
     }
-
-    props.forEach(p => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <strong>${p.address}</strong> — $${p.price} — ${p.size} m²
-        <div class="actions">
-          <button onclick="view(${p.id})">Ver</button>
-          <button onclick="edit(${p.id})">Editar</button>
-          <button onclick="delProp(${p.id})">Borrar</button>
-        </div>
-      `;
-      ul.appendChild(li);
-    });
-  } catch (err) {
-    showMsg(err.message);
-  }
-}
-
-
-// 🏗️ Crear / actualizar propiedad
-document.getElementById('createForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const fd = new FormData(e.target);
-  const body = {
-    address: fd.get('address'),
-    price: parseFloat(fd.get('price')),
-    size: parseFloat(fd.get('size')),
-    description: fd.get('description')
-  };
-
-  const method = editingId ? 'PUT' : 'POST';
-  const url = editingId ? `${apiUrl}/${editingId}` : apiUrl;
-
-  try {
-   const token = localStorage.getItem("token");
-   const res = await fetch(url, {
-    method,
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // ✅ enviar token
-    },
-    body: JSON.stringify(body),
-    credentials: "include"
 });
 
+document.getElementById("propertyForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
 
-    if (!res.ok) throw new Error('Error al guardar');
+    const property = {
+        address: document.getElementById("address").value,
+        price: parseFloat(document.getElementById("price").value),
+        size: parseFloat(document.getElementById("size").value),
+        description: document.getElementById("description").value
+    };
 
-    showMsg(editingId ? '✅ Propiedad actualizada' : '✅ Propiedad creada');
-    e.target.reset();
-    editingId = null;
-    document.getElementById('submitBtn').textContent = 'Crear';
-    listProperties();
-  } catch (err) {
-    showMsg(err.message);
-  }
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(property)
+        });
+        if (response.ok) {
+            showSuccess("Property added successfully!");
+            loadProperties();
+        } else {
+            throw new Error("Failed to add property.");
+        }
+    } catch (error) {
+        showError("Failed to add property.");
+        console.error("Error adding property:", error);
+    }
 });
 
-// 🗑️ Eliminar
-async function delProp(id) {
-  if (!confirm('¿Seguro que deseas borrar este registro?')) return;
-  try {
-    const res = await fetch(`${apiUrl}/${id}`, {
-      method: 'DELETE',
-      credentials: "include"
-    });
-    if (!res.ok) throw new Error('Error al eliminar');
-    showMsg('🗑️ Propiedad eliminada');
-    listProperties();
-  } catch (err) {
-    showMsg(err.message);
-  }
+async function updateProperty(id) {
+    const token = localStorage.getItem("token");
+
+    const newAddress = prompt("Enter new address:");
+    const newPrice = parseFloat(prompt("Enter new price:"));
+    const newSize = parseFloat(prompt("Enter new size:"));
+    const newDescription = prompt("Enter new description:");
+
+    const updatedProperty = {
+        address: newAddress,
+        price: newPrice,
+        size: newSize,
+        description: newDescription
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updatedProperty)
+                });
+        if (response.ok) {
+            showSuccess("Property updated successfully!");
+            loadProperties();
+        }
+    } catch (error) {
+        showError("Failed to update property.");
+        console.error("Error updating property:", error);
+    }
 }
 
-// ✏️ Editar
-async function edit(id) {
-  try {
-    const res = await fetch(`${apiUrl}/${id}`, { credentials: "include" });
-    if (!res.ok) throw new Error('No se pudo obtener el registro');
+async function deleteProperty(id) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-    const p = await res.json();
-    document.getElementById('address').value = p.address;
-    document.getElementById('price').value = p.price;
-    document.getElementById('size').value = p.size;
-    document.getElementById('description').value = p.description || '';
-
-    editingId = id;
-    document.getElementById('submitBtn').textContent = 'Actualizar';
-    showMsg(`✏️ Editando registro #${id}`);
-  } catch (err) {
-    showMsg(err.message);
-  }
+        if (response.ok) {
+            showSuccess("Property deleted successfully!");
+            loadProperties();
+        } else {
+            throw new Error("Failed to delete property.");
+        }
+    } catch (error) {
+        showError("Failed to delete property.");
+        console.error("Error deleting property:", error);
+    }
 }
 
-// 🔍 Vista (temporal)
-function view(id) {
-  alert(`Detalle de la propiedad #${id} (por implementar)`);
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
 }
 
-// 📨 Mensajes
-function showMsg(m) {
-  const msg = document.getElementById('messages');
-  msg.innerText = m;
-  msg.style.opacity = 1;
-  setTimeout(() => (msg.style.opacity = 0), 3000);
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "index.html";
+    } else {
+        loadProperties();
+    }
+});
+document.getElementById("prevPage").addEventListener("click", () => {
+    if (currentPage > 0) {
+        loadProperties(currentPage - 1);
+    }
+});
 
-// 🚀 Cargar propiedades al iniciar
-window.onload = listProperties;
+// Manejar el clic en el botón "Siguiente"
+document.getElementById("nextPage").addEventListener("click", () => {
+    loadProperties(currentPage + 1);
+});

@@ -1,8 +1,8 @@
-# Taller-05-AREP
+# Taller-06-AREP
 
-## Property-Manager
+## Diseño Seguro de Aplicaciones - Taller de Arquitectura Empresarial
 
-### Sistema CRUD para Propiedades 🏡
+### Sistema de Gestión de Propiedades 🏠
 
 Este proyecto implementa un sistema CRUD (Create, Read, Update, Delete) para administrar propiedades inmobiliarias. Con esta aplicación podrás:
 
@@ -14,7 +14,7 @@ Editar datos de propiedades existentes.
 
 Eliminar registros de propiedades.
 
-Está desarrollado con Spring Boot en el backend, MySQL como base de datos y una interfaz sencilla en HTML + JavaScript. El despliegue se realiza en AWS, utilizando instancias EC2 y contenedores Docker.
+El sistema está construido con Spring Boot (backend), MySQL (base de datos) y un frontend simple en HTML + JavaScript servido por Apache Server. Se despliega en AWS usando tres instancias EC2: una para el frontend, otra para el backend y otra para la base de datos.
 
 ### Videos:
 DB:
@@ -28,34 +28,55 @@ https://youtu.be/_YPnWBErqsY
 https://youtu.be/LpGFZ509rng
 
 
+### Descripción General
 
-### 🧩 Arquitectura del Sistema
+Este proyecto demuestra una aplicación web segura y escalable. Los principales componentes son:
+
+1. Frontend: Servido por un servidor Apache, cliente HTML + JavaScript asincrónico sobre HTTPS.
+
+2. Frontend: Servido por un servidor Apache, cliente HTML + JavaScript asincrónico sobre HTTPS.
+
+3. Base de Datos: MySQL ejecutándose dentro de un contenedor Docker.
+
+El despliegue se realiza en instancias EC2 de AWS, siguiendo buenas prácticas de seguridad como cifrado TLS, almacenamiento seguro de contraseñas y comunicación segura entre componentes.
+
+### Características Clave
+
+- Cifrado TLS: Comunicación segura usando certificados Let's Encrypt.
+
+- Cifrado TLS: Comunicación segura usando certificados Let's Encrypt.
+
+- Seguridad en Login: Autenticación JWT con contraseñas encriptadas (BCrypt).
+
+- Despliegue en AWS: Escalable y seguro en instancias EC2.
+
+### 🧩 Arquitectura
 
 La aplicación se compone de tres capas principales:
 
-1. Backend (API REST)
+1. Frontend (Apache Server):
 
-    - Desarrollado con Spring Boot.
+- Sirve archivos estáticos (HTML, CSS, JS) sobre HTTPS.
 
-    - Ofrece endpoints CRUD en el puerto 8080.
+- Se aloja en una instancia EC2.
 
-    - Contiene la lógica de negocio y se conecta con la base de datos.
+- Usa certificados TLS de Let's Encrypt.
 
-2. Frontend
+2. Backend (Spring Boot):
 
-    - Interfaz construida con HTML, CSS y JavaScript.
+- API REST para operaciones CRUD.
 
-    - Emplea Fetch API para comunicarse con el backend.
+- Instancia EC2 separada.
 
-    - Permite al usuario gestionar las propiedades.
+- Autenticación JWT.
 
-3. Base de Datos
+- Comunicación segura sobre HTTPS.
 
-    - MySQL en contenedor Docker.
+3. Base de Datos:
 
-    - Almacena información de propiedades: id, dirección, precio, tamaño y descripción.
+- MySQL en contenedor Docker.
 
-    - Expone el puerto 3306.
+- Almacena usuarios y propiedades.
 
 ### 🔑 Flujo de Interacción 
 
@@ -103,19 +124,20 @@ README.md
 1. Clona el repositorio:
 
     ```
-    git clone https://github.com/juanescan/Taller-05-AREP.git
+    git clone https://github.com/juanescan/Taller-06-AREP.git
     
     ```
-2. Compila el proyecto:
+2. Navegar al directorio del backend:
+
+    ```
+    cd Taller-06-AREP/backend
+    
+    ```
+3. Construir el proyecto:
 
     ```
     mvn clean install
-    
-    ```
-3. Ejecuta:
-
-    ```
-    mvn spring-boot:run
+    mvn clean package
 
     ```
 
@@ -156,6 +178,10 @@ README.md
 - Permite el puerto 3306 para MySQL (solo desde el backend).
 
 - Permite el puerto 8080 para el backend.
+
+### configuracion
+
+![conf](/images/propiedades.png)
 
 ### APP
 
