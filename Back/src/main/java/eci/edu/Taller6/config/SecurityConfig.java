@@ -39,7 +39,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://taller06arepfront.duckdns.org", "https://taller06arepfront.duckdns.org/"));
+        configuration.setAllowedOrigins(List.of("http://taller6homefront.duckdns.org.duckdns.org", "http://taller6homefront.duckdns.org/"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
