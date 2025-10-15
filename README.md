@@ -16,16 +16,9 @@ Eliminar registros de propiedades.
 
 El sistema está construido con Spring Boot (backend), MySQL (base de datos) y un frontend simple en HTML + JavaScript servido por Apache Server. Se despliega en AWS usando tres instancias EC2: una para el frontend, otra para el backend y otra para la base de datos.
 
-### Videos:
-DB:
+### Video:
 
-https://youtu.be/IKl8q8Ex4_U
-
-Back:
-
-https://youtu.be/_YPnWBErqsY
-
-https://youtu.be/LpGFZ509rng
+https://youtu.be/my7BrcNYZQU
 
 
 ### Descripción General
@@ -99,21 +92,29 @@ Principales componentes del backend:
 src/
   main/
     java/
-      com/example/propertymanager/
-          Property.java
-          PropertyRepository.java
-          PropertyService.java
-          PropertyController.java
-          Application.java
+      eci/edu/Taller6/
+        config/
+            CorsConfig.java
+            CorsFilter.java
+            JwtAuthenthicationFilter.java
+        controller/
+            AuthController.java
+            HelloController.java
+            PropertyController.java
+        model/
+            Property.java
+            User.java
+        repository/
+            PropertyRepository.java
+            UserRepository.java 
+        service/
+            JwtUtil.java
+            PropertyService.java
+            UserService.java
     resources/
-        static/
-            index.html
-            styles.css
-            app.js
         application.properties
   test/
     java/
-Dockerfile
 pom.xml
 README.md
 
@@ -141,43 +142,41 @@ README.md
 
     ```
 
-### ☁️ Despliegue en AWS (Resumen)
+### Diseño de Clases 
 
-1. Base de datos MySQL
+#### Clases del Frontend
 
-- Lanza una instancia EC2, instala Docker y ejecuta:
+- login.js: Maneja la autenticación y almacena el JWT en localStorage.
 
-    ```
-    docker run --name property-db \
-    -e MYSQL_ROOT_PASSWORD=root \
-    -e MYSQL_DATABASE=property_db \
-    -p 3306:3306 -d mysql:latest
+- app.js: Gestiona operaciones CRUD y actualiza la interfaz de usuario.
 
-    ```
+- config.js: Almacena constantes de configuración, como la URL del backend.
 
-2. Backend 
-  
-- Empaqueta la app y crea la imagen:  
+#### Clases del Backend
 
-    ```
-    mvn clean package
-    docker build -t property-manager .
-    docker tag property-manager juanescan/taller5
-    docker push juanescan/taller5
+- AuthController.java: Autenticación de usuarios y generación de JWT.
 
-    ``` 
-- En otra instancia EC2:
-  
-   ```
-    docker pull juanescan/taller5
-    docker run -d -p 8080:8080 --name property-manager juanescan/taller5
-     
-    ```  
-3. Reglas de seguridad
- 
-- Permite el puerto 3306 para MySQL (solo desde el backend).
+- PropertyController.java: CRUD de propiedades.
 
-- Permite el puerto 8080 para el backend.
+- PropertyService.java: Lógica de negocio de propiedades.
+
+- PropertyRepository.java: Interacción con la base de datos.
+
+- JwtUtil.java: Generación y validación de tokens JWT.
+
+- Property.java: Entidad de propiedad.
+
+- UserService.java, User.java, UserRepository.java: Gestión de usuarios y autenticación.
+
+#### Base de Datos
+
+- propertydb:
+
+    - Tabla property: id, address, price, size, description.
+
+    - Tabla user: id, username, password.
+
+
 
 ### configuracion
 
