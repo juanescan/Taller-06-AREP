@@ -1,4 +1,4 @@
-const API_URL = "https://taller6home.org:8843/api/properties";
+const API_URL = "https://taller6home.duckdns.org:8843/api/properties";
 const BACKEND_URL = "https://taller6home.duckdns.org:8843";
 
 let currentPage = 0;
