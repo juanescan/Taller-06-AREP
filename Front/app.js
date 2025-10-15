@@ -1,14 +1,18 @@
 
 let editingId = null;
 
-// 📋 Listar propiedades
 async function listProperties() {
   try {
-    const res = await fetch(apiUrl, { credentials: "include" }); // 🔹 incluye cookies si tu backend usa sesión
+    const token = localStorage.getItem("token");
+    const res = await fetch(apiUrl, {
+      headers: { "Authorization": `Bearer ${token}` },
+      credentials: "include"
+    });
+
     if (!res.ok) throw new Error('Error al obtener datos');
 
     const props = await res.json();
-    const ul = document.getElementById('propertiesList');
+    const ul = document.getElementById('propertyList'); // coincide con HTML
     ul.innerHTML = '';
 
     if (!props.length) {
@@ -33,6 +37,7 @@ async function listProperties() {
   }
 }
 
+
 // 🏗️ Crear / actualizar propiedad
 document.getElementById('createForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -49,12 +54,12 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
   const url = editingId ? `${apiUrl}/${editingId}` : apiUrl;
 
   try {
-    const token = localStorage.getItem("token"); // 🔑 obtener token
-const res = await fetch(url, {
+   const token = localStorage.getItem("token");
+   const res = await fetch(url, {
     method,
     headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // enviar token JWT
+        "Authorization": `Bearer ${token}` // ✅ enviar token
     },
     body: JSON.stringify(body),
     credentials: "include"
